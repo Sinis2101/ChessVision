@@ -12,8 +12,6 @@
 
 <body>
   <div id="header"></div>
-  <div id="timer"></div>
-  <div id="cell"></div>
   <div id="game"></div>
   <script type="text/babel">
 
@@ -218,31 +216,12 @@
               {this.renderSquare("H1")}
             </section>
           </div>
-
         );
       }
     }
-
-    class Game extends React.Component {
-      render() {
-        return (
-          <div className="game">
-            <div className="game-board">
-              <Board />
-            </div>
-            <div className="game-info">
-              <div>{/* status */}</div>
-              <ol>{/* TODO */}</ol>
-            </div>
-          </div>
-        );
-      }
-    }
-
-    // ========================================
 
     ReactDOM.render(
-      <Game />,
+      <Board />,
       document.getElementById('game')
     );
 
