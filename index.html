@@ -105,11 +105,11 @@
       }
 
       componentDidMount() {
-        const randomRow = Math.floor(Math.random() * (9 - 1)) + 1;
-        const randomColumn = Math.floor(Math.random() * (73 - 65)) + 65;
+        const randomRow = Math.floor(Math.random() * (9 - 1)) + 1; // Generates a random integer between 1 and 8.
+        const randomColumn = Math.floor(Math.random() * (73 - 65)) + 65; // Generates a random integer ASCII code between A (65) and H (72)
 
         this.setState(state => ({
-            column: String.fromCharCode(randomColumn),
+            column: String.fromCharCode(randomColumn), // Gets char from ASCII code
             row: randomRow
           }));
       }
@@ -117,7 +117,7 @@
       render() {
         return (
           <h3>
-            {this.state.column}{this.state.row}
+            {this.state.column}{this.state.row} // Cell format e.g: A7
           </h3>
         );
       }
