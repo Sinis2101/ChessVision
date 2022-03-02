@@ -13,6 +13,7 @@
 <body>
   <div id="header"></div>
   <div id="timer"></div>
+  <div id="cell"></div>
   <div id="game"></div>
   <script type="text/babel">
 
@@ -93,6 +94,39 @@
       document.getElementById('timer')
     );
 
+    class RandomCell extends React.Component {
+
+      constructor(props) {
+        super(props);
+        this.state = {
+          column: 'Z',
+          row: 0
+        };
+      }
+
+      componentDidMount() {
+        const randomRow = Math.floor(Math.random() * (9 - 1)) + 1;
+        const randomColumn = Math.floor(Math.random() * (73 - 65)) + 65;
+
+        this.setState(state => ({
+            column: String.fromCharCode(randomColumn),
+            row: randomRow
+          }));
+      }
+
+      render() {
+        return (
+          <h1>
+            {this.state.column}{this.state.row}
+          </h1>
+        );
+      }
+    }
+
+    ReactDOM.render(
+      <RandomCell />,
+      document.getElementById('cell')
+    );
 
     class Square extends React.Component {
       render() {
@@ -203,7 +237,6 @@
       <Game />,
       document.getElementById('game')
     );
-
 
   </script>
 </body>
