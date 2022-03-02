@@ -108,13 +108,12 @@
       constructor(props) {
         super(props);
         this.state = {
-          column: 'Z',
-          row: 0,
-          squares: Array(64).fill(null),
+          column: '',
+          row: null,
         };
       }
 
-      componentDidMount() {
+      changeCell() {
         const randomRow = Math.floor(Math.random() * (9 - 1)) + 1; // Generates a random integer between 1 and 8.
         const randomColumn = Math.floor(Math.random() * (73 - 65)) + 65; // Generates a random integer ASCII code between A (65) and H (72)
 
@@ -125,17 +124,12 @@
       }
 
       handleClick(i) {
-        this.componentDidMount();
-        const squares = this.state.squares.slice();
-        squares[i] = 'X';
-        this.setState({ squares: squares });
+        this.changeCell();
       }
-
 
       renderSquare(i) {
         return (
           <Square
-            value={this.state.squares[i]}
             onClick={() => this.handleClick(i)}
           />
         );
