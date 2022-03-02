@@ -22,14 +22,27 @@
       document.getElementById('header')
     );
 
-    class Timer extends React.Component {
+    function Square(props) {
+      return (
+        <button className="square" onClick={props.onClick}>
+          {props.value}
+        </button>
+      );
+    }
+
+    class Board extends React.Component {
+
       constructor(props) {
         super(props);
         this.state = {
           seconds: 0,
           minutes: 1,
           secFormat: '0',
-          minFormat: '0'
+          minFormat: '0',
+          column: '',
+          row: null,
+          score: 0,
+          playing: false
         };
       }
 
@@ -69,48 +82,25 @@
           this.setState(state => ({
             seconds: state.seconds - 1
           }));
+        } else {
+          this.setState(state => ({
+            playing: false,
+            column: "Game Over",
+            row: null
+          }));
         }
-      }
-
-      componentDidMount() {
-        this.interval = setInterval(() => this.tick(), 1000);
       }
 
       componentWillUnmount() {
         clearInterval(this.interval);
       }
 
-      render() {
-        return (
-          <div>
-            Time: {this.state.minFormat}{this.state.minutes}:{this.state.secFormat}{this.state.seconds}
-          </div>
-        );
-      }
-    }
-
-    ReactDOM.render(
-      <Timer />,
-      document.getElementById('timer')
-    );
-
-
-    function Square(props) {
-      return (
-        <button className="square" onClick={props.onClick}>
-          {props.value}
-        </button>
-      );
-    }
-
-    class Board extends React.Component {
-
-      constructor(props) {
-        super(props);
-        this.state = {
-          column: '',
-          row: null,
-        };
+      startGame() {
+        this.setState(state => ({
+          playing: true,
+        }));
+        this.interval = setInterval(() => this.tick(), 1000);
+        this.changeCell();
       }
 
       changeCell() {
@@ -123,14 +113,25 @@
         }));
       }
 
-      handleClick(i) {
-        this.changeCell();
+      handleClick(id) {
+        if(this.playing) {
+          this.changeCell();
+          this.verifyCell(this.state.column+this.state.row, id)
+        }
       }
 
-      renderSquare(i) {
+      verifyCell(correctId, id) {
+        if(correctId==id) {
+          this.setState(state => ({
+            score: state.score + 1
+          }));
+        }
+      }
+
+      renderSquare(id, text) {
         return (
           <Square
-            onClick={() => this.handleClick(i)}
+            value={text} onClick={() => this.handleClick(id)}
           />
         );
       }
@@ -138,76 +139,83 @@
       render() {
         return (
           <div>
+            <div>
+            Time: {this.state.minFormat}{this.state.minutes}:{this.state.secFormat}{this.state.seconds}
+            </div>
+
             <h3>
               {this.state.column}{this.state.row}
             </h3>
 
-            <section>
+            <h4>
+              Score: {this.state.score}
+            </h4>
 
-              {this.renderSquare("a8")}
-              {this.renderSquare("b8")}
-              {this.renderSquare("c8")}
-              {this.renderSquare("d8")}
-              {this.renderSquare("e8")}
-              {this.renderSquare("f8")}
-              {this.renderSquare("g8")}
-              {this.renderSquare("h8")}
-              {this.renderSquare("a7")}
-              {this.renderSquare("b7")}
-              {this.renderSquare("c7")}
-              {this.renderSquare("d7")}
-              {this.renderSquare("e7")}
-              {this.renderSquare("f7")}
-              {this.renderSquare("g7")}
-              {this.renderSquare("h7")}
-              {this.renderSquare("a6")}
-              {this.renderSquare("b6")}
-              {this.renderSquare("c6")}
-              {this.renderSquare("d6")}
-              {this.renderSquare("e6")}
-              {this.renderSquare("f6")}
-              {this.renderSquare("g6")}
-              {this.renderSquare("h6")}
-              {this.renderSquare("a5")}
-              {this.renderSquare("b5")}
-              {this.renderSquare("c5")}
-              {this.renderSquare("d5")}
-              {this.renderSquare("e5")}
-              {this.renderSquare("f5")}
-              {this.renderSquare("g5")}
-              {this.renderSquare("h5")}
-              {this.renderSquare("a4")}
-              {this.renderSquare("b4")}
-              {this.renderSquare("c4")}
-              {this.renderSquare("d4")}
-              {this.renderSquare("e4")}
-              {this.renderSquare("f4")}
-              {this.renderSquare("g4")}
-              {this.renderSquare("h4")}
-              {this.renderSquare("a3")}
-              {this.renderSquare("b3")}
-              {this.renderSquare("c3")}
-              {this.renderSquare("d3")}
-              {this.renderSquare("e3")}
-              {this.renderSquare("f3")}
-              {this.renderSquare("g3")}
-              {this.renderSquare("h3")}
-              {this.renderSquare("a2")}
-              {this.renderSquare("b2")}
-              {this.renderSquare("c2")}
-              {this.renderSquare("d2")}
-              {this.renderSquare("e2")}
-              {this.renderSquare("f2")}
-              {this.renderSquare("g2")}
-              {this.renderSquare("h2")}
-              {this.renderSquare("a1")}
-              {this.renderSquare("b1")}
-              {this.renderSquare("c1")}
-              {this.renderSquare("d1")}
-              {this.renderSquare("e1")}
-              {this.renderSquare("f1")}
-              {this.renderSquare("g1")}
-              {this.renderSquare("h1")}
+            <section>
+              {this.renderSquare("A8", "8ㅤㅤA")}
+              {this.renderSquare("B8", "ㅤㅤ B")}
+              {this.renderSquare("C8", "ㅤㅤ C")}
+              {this.renderSquare("D8", "ㅤㅤ D")}
+              {this.renderSquare("E8", "ㅤㅤ E")}
+              {this.renderSquare("F8", "ㅤㅤ F")}
+              {this.renderSquare("G8", "ㅤㅤ G")}
+              {this.renderSquare("H8", "ㅤㅤ H")}
+              {this.renderSquare("A7", "7")}
+              {this.renderSquare("B7")}
+              {this.renderSquare("C7")}
+              {this.renderSquare("D7")}
+              {this.renderSquare("E7")}
+              {this.renderSquare("F7")}
+              {this.renderSquare("G7")}
+              {this.renderSquare("H7")}
+              {this.renderSquare("A6", "6")}
+              {this.renderSquare("B6")}
+              {this.renderSquare("C6")}
+              {this.renderSquare("D6")}
+              {this.renderSquare("E6")}
+              {this.renderSquare("F6")}
+              {this.renderSquare("G6")}
+              {this.renderSquare("H6")}
+              {this.renderSquare("A5", "5")}
+              {this.renderSquare("B5")}
+              {this.renderSquare("C5")}
+              {this.renderSquare("D5")}
+              {this.renderSquare("E5")}
+              {this.renderSquare("F5")}
+              {this.renderSquare("G5")}
+              {this.renderSquare("H5")}
+              {this.renderSquare("A4", "4")}
+              {this.renderSquare("B4")}
+              {this.renderSquare("C4")}
+              {this.renderSquare("D4")}
+              {this.renderSquare("E4")}
+              {this.renderSquare("F4")}
+              {this.renderSquare("G4")}
+              {this.renderSquare("H4")}
+              {this.renderSquare("A3", "3")}
+              {this.renderSquare("B3")}
+              {this.renderSquare("C3")}
+              {this.renderSquare("D3")}
+              {this.renderSquare("E3")}
+              {this.renderSquare("F3")}
+              {this.renderSquare("G3")}
+              {this.renderSquare("H3")}
+              {this.renderSquare("A2", "2")}
+              {this.renderSquare("B2")}
+              {this.renderSquare("C2")}
+              {this.renderSquare("D2")}
+              {this.renderSquare("E2")}
+              {this.renderSquare("F2")}
+              {this.renderSquare("G2")}
+              {this.renderSquare("H2")}
+              {this.renderSquare("A1", "1")}
+              {this.renderSquare("B1")}
+              {this.renderSquare("C1")}
+              {this.renderSquare("D1")}
+              {this.renderSquare("E1")}
+              {this.renderSquare("F1")}
+              {this.renderSquare("G1")}
+              {this.renderSquare("H1")}
             </section>
           </div>
 
