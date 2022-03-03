@@ -33,6 +33,9 @@
       constructor(props) {
         super(props);
         this.state = {
+          time: 60,
+          clickTimeS: 0,
+          clickTimeM: 0,
           seconds: 0,
           minutes: 1,
           secFormat: '0',
@@ -96,13 +99,15 @@
         clearInterval(this.interval);
       }
 
-      startGame() {        
+      startGame() {
         this.setState(state => ({
-          playing: true,
+          playing: true,          
+          secons: 60
         }));
         this.interval = setInterval(() => this.tick(), 1000);
         this.changeCell();
-        <Board items={this.state.items}/>
+        <Board items={this.state.items} />
+
       }
 
       changeCell() {
@@ -122,21 +127,42 @@
         }
       }
 
+      asignTheTime() {
+        this.state.clickTimeS = this.state.time-this.state.seconds;
+        this.state.time = this.state.seconds
+
+        if (this.state.clickTimeS<=9){
+          this.state.clickTimeS = '0'+this.state.clickTimeS;
+        }
+      }
+
       verifyCell(correctId, id) {
+        this.asignTheTime();
+
         if (correctId == id) {
           this.setState(state => ({
             score: state.score + 1
           }));
-        }
 
-        const newSquareClicked = {
-          text: this.state.column + this.state.row,
-          id: Date.now()
+          const newSquareClickedG = {
+            text: ' [✔] ' + this.state.minFormat + this.state.clickTimeM + ':' + this.state.clickTimeS +'  '+ this.state.column + this.state.row,
+            id: Date.now()
+          }
+          this.setState(state => ({
+            items: state.items.concat(newSquareClickedG),
+            text: ''
+          }));
+
+        } else {
+          const newSquareClickedB = {
+            text: ' [X] ' + this.state.minFormat + this.state.clickTimeM + ':' + this.state.clickTimeS +'  '+  this.state.column + this.state.row,
+            id: Date.now()
+          }
+          this.setState(state => ({
+            items: state.items.concat(newSquareClickedB),
+            text: ''
+          }));
         }
-        this.setState(state => ({
-          items: state.items.concat(newSquareClicked),
-          text: ''
-        }));
       }
 
       renderSquare(id, text) {
@@ -232,13 +258,13 @@
             <button on onClick={() => this.startGame()}> Play the game</button>
 
             <div>
-            <ul>
-              {this.state.items.map(item => (
-                <li key ={item.id}>{item.text}</li>
-              ))}
-            </ul>
-            
-            
+              <ul>
+                {this.state.items.map(item => (
+                  <li key={item.id}>{item.text}</li>
+                ))}
+              </ul>
+
+
             </div>
 
           </div>
