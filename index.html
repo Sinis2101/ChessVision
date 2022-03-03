@@ -12,7 +12,7 @@
 
 <body>
   <div id="header"></div>
-  <div id="game"></div>  
+  <div id="game"></div>
   <script type="text/babel">
 
     ReactDOM.render(
@@ -40,7 +40,9 @@
           column: '',
           row: null,
           score: 0,
-          playing: false
+          playing: false,
+          items: [],
+          text: ''
         };
         this.startGame = this.startGame.bind(this);
       }
@@ -94,12 +96,13 @@
         clearInterval(this.interval);
       }
 
-      startGame() {
+      startGame() {        
         this.setState(state => ({
           playing: true,
         }));
         this.interval = setInterval(() => this.tick(), 1000);
         this.changeCell();
+        <Board items={this.state.items}/>
       }
 
       changeCell() {
@@ -113,18 +116,27 @@
       }
 
       handleClick(id) {
-        if(this.state.playing) {
+        if (this.state.playing) {
           this.changeCell();
-          this.verifyCell(this.state.column+this.state.row, id)
+          this.verifyCell(this.state.column + this.state.row, id)
         }
       }
 
       verifyCell(correctId, id) {
-        if(correctId==id) {
+        if (correctId == id) {
           this.setState(state => ({
             score: state.score + 1
           }));
         }
+
+        const newSquareClicked = {
+          text: this.state.column + this.state.row,
+          id: Date.now()
+        }
+        this.setState(state => ({
+          items: state.items.concat(newSquareClicked),
+          text: ''
+        }));
       }
 
       renderSquare(id, text) {
@@ -139,7 +151,7 @@
         return (
           <div>
             <div>
-            Time: {this.state.minFormat}{this.state.minutes}:{this.state.secFormat}{this.state.seconds}
+              Time: {this.state.minFormat}{this.state.minutes}:{this.state.secFormat}{this.state.seconds}
             </div>
 
             <h3>
@@ -216,9 +228,18 @@
               {this.renderSquare("G1")}
               {this.renderSquare("H1")}
             </section>
-            <br/>
-            <button on onClick={()=> this.startGame()}> Play the game</button>
+            <br />
+            <button on onClick={() => this.startGame()}> Play the game</button>
 
+            <div>
+            <ul>
+              {this.state.items.map(item => (
+                <li key ={item.id}>{item.text}</li>
+              ))}
+            </ul>
+            
+            
+            </div>
 
           </div>
         );
